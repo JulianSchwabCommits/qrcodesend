@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link as RouterLink } from 'react-router-dom';
 import {
   Box,
   Container,
@@ -8,6 +8,7 @@ import {
   VStack,
   useToast,
   Spinner,
+  Button,
 } from '@chakra-ui/react';
 import { supabase } from '../lib/supabase';
 
@@ -21,7 +22,7 @@ const Get = () => {
   useEffect(() => {
     const fetchMessage = async () => {
       const id = searchParams.get('id');
-      
+
       if (!id) {
         setError('No message ID provided');
         setIsLoading(false);
@@ -109,6 +110,17 @@ const Get = () => {
             </Text>
           </Box>
         )}
+
+        <Button
+          as={RouterLink}
+          to="/"
+          size="lg"
+          variant="primary"
+          className="primary-button"
+          mt={4}
+        >
+          Send your own message
+        </Button>
       </VStack>
     </Container>
   );
