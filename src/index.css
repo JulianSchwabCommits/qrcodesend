@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display&display=swap');
+
+:root {
+  --primary-bg: #1a1a1a;
+  --secondary-bg: #2d2d2d;
+  --border-color: #404040;
+  --text-color: #ffffff;
+  --hover-bg: #ffffff;
+  --hover-text: #000000;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--primary-bg);
+  color: var(--text-color);
+  min-height: 100vh;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', serif;
+}
+
+button {
+  font-family: 'Inter', sans-serif;
+  border-radius: 9999px;
+  transition: all 0.3s ease;
+}
+
+.primary-button {
+  background-color: #e5e5e5;
+  color: #000000;
+  border: 1px solid #000000;
+}
+
+.primary-button:hover {
+  background-color: #000000;
+  color: #ffffff;
+  border: 1px solid #ffffff;
+}
+
+.secondary-button {
+  background-color: #2d2d2d;
+  color: #ffffff;
+  border: 1px solid #404040;
+}
+
+.secondary-button:hover {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #404040;
+}
+
+.input-field {
+  background-color: var(--secondary-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 9999px;
+  color: var(--text-color);
+  transition: all 0.3s ease;
+}
+
+.input-field:hover, .input-field:focus {
+  border-color: var(--hover-bg);
+  box-shadow: 0 0 0 1px var(--hover-bg);
+}
+
+.card {
+  background-color: var(--secondary-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  background-color: var(--hover-bg);
+  color: var(--hover-text);
+}
