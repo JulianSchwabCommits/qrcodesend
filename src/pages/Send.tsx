@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import type { ChangeEvent } from 'react';
 import {
   Box,
@@ -14,9 +14,10 @@ import {
   IconButton,
   InputGroup,
   InputRightElement,
+  Tooltip,
 } from '@chakra-ui/react';
 import { QRCodeSVG } from 'qrcode.react';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';
+import { FaEye, FaEyeSlash, FaDownload } from 'react-icons/fa';
 import { supabase } from '../lib/supabase';
 
 const Send = () => {
@@ -25,6 +26,8 @@ const Send = () => {
   const [messageId, setMessageId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [domain, setDomain] = useState('qr.julianschwab.dev'); // Default fallback
+  const [isHovering, setIsHovering] = useState(false);
+  const qrRef = useRef<HTMLDivElement>(null);
   const toast = useToast();
 
   useEffect(() => {
@@ -94,6 +97,41 @@ const Send = () => {
     ? `https://${domain}/get/?id=${messageId}`
     : '';
 
+  const handleDownload = () => {
+    if (qrRef.current) {
+      const svg = qrRef.current.querySelector('svg');
+      if (svg) {
+        const svgData = new XMLSerializer().serializeToString(svg);
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        const padding = 40; // Add 40px padding on each side
+
+        img.onload = () => {
+          canvas.width = img.width + (padding * 2);
+          canvas.height = img.height + (padding * 2);
+
+          // Fill white background
+          if (ctx) {
+            ctx.fillStyle = 'white';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+          }
+
+          // Draw the QR code in the center
+          ctx?.drawImage(img, padding, padding);
+          const pngFile = canvas.toDataURL('image/png');
+
+          const downloadLink = document.createElement('a');
+          downloadLink.download = 'qrcode.png';
+          downloadLink.href = pngFile;
+          downloadLink.click();
+        };
+
+        img.src = 'data:image/svg+xml;base64,' + btoa(svgData);
+      }
+    }
+  };
+
   return (
     <Container maxW="container.md" py={20}>
       <VStack spacing={12}>
@@ -147,14 +185,37 @@ const Send = () => {
         {messageId && (
           <VStack spacing={6} w="100%" align="center">
             <Box
+              ref={qrRef}
               p={8}
-              bg="#2d2d2d"
+              bg="white"
               borderRadius="2xl"
-              boxShadow="lg"
+              boxShadow={isHovering ? 'xl' : 'lg'}
               border="1px solid #404040"
               className="card"
+              position="relative"
+              onMouseEnter={() => setIsHovering(true)}
+              onMouseLeave={() => setIsHovering(false)}
+              transition="all 0.2s ease-in-out"
             >
               <QRCodeSVG value={messageUrl} size={256} />
+              {isHovering && (
+                <Tooltip label="Download QR Code">
+                  <IconButton
+                    aria-label="Download QR Code"
+                    icon={<FaDownload />}
+                    position="absolute"
+                    top="50%"
+                    left="50%"
+                    transform="translate(-50%, -50%)"
+                    size="lg"
+                    bg="white"
+                    color="black"
+                    opacity={0.9}
+                    onClick={handleDownload}
+                    _hover={{ opacity: 1, bg: 'white' }}
+                  />
+                </Tooltip>
+              )}
             </Box>
             <Text fontSize="md" color="gray.400">
               Scan this QR code to view the message
